@@ -16,19 +16,23 @@ public class Main {
         }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Insira o comando: ");
+        System.out.print("Insira o comando> ");
         String input = reader.readLine();
         String command = input.substring(0,1);
 
         switch (command) {
             case "i":
                 tree.root = insertInput(tree, Integer.parseInt(input.substring(2, input.length())));
+                tree.PreOrder(tree.root);
+                System.out.println("");
                 break;
             case "b":
                 searchInput(tree, Integer.parseInt(input.substring(2, input.length())));
                 break;
             case "r":
                 tree.root = removeInput(tree, Integer.parseInt(input.substring(2, input.length())));
+                tree.PreOrder(tree.root);
+                System.out.println("");
                 break;
             case "e":
                 System.out.println("Finalizando programa.");

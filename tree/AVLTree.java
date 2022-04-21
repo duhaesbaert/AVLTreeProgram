@@ -119,6 +119,7 @@ public class AVLTree {
 
         if ((currentBal > 1) && (currentBalance(root.left) >= 0)) {
             return rotateRight(root);
+
         }
 
         if ((currentBal > 1) && (currentBalance(root.left) < 0)) {
