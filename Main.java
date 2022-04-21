@@ -40,10 +40,13 @@ public class Main {
                 String value = input.substring(2, input.length());
                 if (value.equals("pre")) {
                     tree.PreOrder(tree.root);
+                    System.out.println("");
                 } else if (value.equals("post")) {
                     tree.PostOrder(tree.root);
+                    System.out.println("");
                 } else if (value.equals("in")) {
                     tree.InOrder(tree.root);
+                    System.out.println("");
                 } else {
                     System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
                 }
@@ -63,11 +66,10 @@ public class Main {
         System.out.println("");
         System.out.println("Print(p):");
         System.out.println("Pré-ordem: p pre");
-        System.out.println("Pós-ordem: p post");
         System.out.println("Em ordem: p in");
+        System.out.println("Pós-ordem: p post");
         System.out.println("");
         System.out.println("Para sair, digite e");
-        System.out.println("");
     }
 
     private static Node insertInput(AVLTree tree, int value) {

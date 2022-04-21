@@ -19,7 +19,7 @@ public class AVLTree {
             return node;
         }
 
-        node.height = 1 + maxVal(treeHeight(node.left), treeHeight(node.right));
+        node.height = 1 + maxHeight(treeHeight(node.left), treeHeight(node.right));
 
         int balance = getBalance(node);
 
@@ -102,7 +102,7 @@ public class AVLTree {
             return root;
         }
 
-        root.height = maxVal(treeHeight(root.left), treeHeight(root.right)) + 1;
+        root.height = maxHeight(treeHeight(root.left), treeHeight(root.right)) + 1;
 
         int balance = getBalance(root);
 
@@ -128,15 +128,30 @@ public class AVLTree {
     }
 
     public void PreOrder(Node node) {
-
-    }
-
-    public void PostOrder(Node node) {
-
+        if (node == null) {
+            return;
+        }
+        System.out.print(node.key + " ");
+        PreOrder(node.left);
+        PreOrder(node.right);
     }
 
     public void InOrder(Node node) {
+        if (node == null) {
+            return;
+        }
+        InOrder(node.left);
+        System.out.print(node.key + " ");
+        InOrder(node.right);
+    }
 
+    public void PostOrder(Node node) {
+        if (node == null) {
+            return;
+        }
+        PostOrder(node.left);
+        PostOrder(node.right);
+        System.out.print(node.key + " ");
     }
 
     int treeHeight(Node node) {
@@ -147,8 +162,12 @@ public class AVLTree {
         return node.height;
     }
  
-    int maxVal(int a, int b) {
-        return (a > b) ? a : b;
+    int maxHeight(int heightA, int heightB) {
+        if (heightA > heightB) {
+            return heightA;
+        } else {
+            return heightB;
+        }
     }
  
     Node rotateRight(Node nodeA) {
@@ -158,8 +177,8 @@ public class AVLTree {
         nodeB.right = nodeA;
         nodeA.left = nodeTmp;
 
-        nodeA.height = maxVal(treeHeight(nodeA.left), treeHeight(nodeA.right)) + 1;
-        nodeB.height = maxVal(treeHeight(nodeB.left), treeHeight(nodeB.right)) + 1;
+        nodeA.height = maxHeight(treeHeight(nodeA.left), treeHeight(nodeA.right)) + 1;
+        nodeB.height = maxHeight(treeHeight(nodeB.left), treeHeight(nodeB.right)) + 1;
  
         return nodeB;
     }
@@ -171,8 +190,8 @@ public class AVLTree {
         nodeB.left = nodeA;
         nodeA.right = nodeTmp;
 
-        nodeA.height = maxVal(treeHeight(nodeA.left), treeHeight(nodeA.right)) + 1;
-        nodeB.height = maxVal(treeHeight(nodeB.left), treeHeight(nodeB.right)) + 1;
+        nodeA.height = maxHeight(treeHeight(nodeA.left), treeHeight(nodeA.right)) + 1;
+        nodeB.height = maxHeight(treeHeight(nodeB.left), treeHeight(nodeB.right)) + 1;
 
         return nodeB;
     }
