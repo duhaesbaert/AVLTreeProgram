@@ -1,9 +1,10 @@
 package tree;
 
-// Java program for insertion in AVL Tree
 public class Node {
-    int key, height;
-    Node left, right;
+    int key;
+    int height;
+    Node left;
+    Node right;
 
     Node(int d) {
         key = d;
