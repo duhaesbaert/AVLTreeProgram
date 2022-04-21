@@ -19,24 +19,29 @@ public class AVLTree {
             return node;
         }
 
-        node.height = 1 + maxHeight(treeHeight(node.left), treeHeight(node.right));
+        if (treeHeight(node.left) > treeHeight(node.right)){
+            node.height = treeHeight(node.left);
+        } else {
+            node.height = treeHeight(node.right);
+        }
+        node.height++;
 
-        int balance = getBalance(node);
+        int currentBal = currentBalance(node);
 
-        if (balance > 1 && key < node.left.key) {
+        if ((currentBal > 1) && (key < node.left.key)) {
             return rotateRight(node);
         }
 
-        if (balance < -1 && key > node.right.key) {
+        if ((currentBal < -1) && key > (node.right.key)) {
             return rotateLeft(node);
         }
 
-        if (balance > 1 && key > node.left.key) {
+        if ((currentBal > 1) && (key > node.left.key)) {
             node.left = rotateLeft(node.left);
             return rotateRight(node);
         }
 
-        if (balance < -1 && key < node.right.key) {
+        if ((currentBal < -1) && (key < node.right.key)) {
             node.right = rotateRight(node.right);
             return rotateLeft(node);
         }
@@ -102,24 +107,29 @@ public class AVLTree {
             return root;
         }
 
-        root.height = maxHeight(treeHeight(root.left), treeHeight(root.right)) + 1;
+        if (treeHeight(root.left) > treeHeight(root.right)){
+            root.height = treeHeight(root.left);
+        } else {
+            root.height = treeHeight(root.right);
+        }
+        root.height++;
 
-        int balance = getBalance(root);
+        int currentBal = currentBalance(root);
 
-        if (balance > 1 && getBalance(root.left) >= 0) {
+        if ((currentBal > 1) && (currentBalance(root.left) >= 0)) {
             return rotateRight(root);
         }
 
-        if (balance > 1 && getBalance(root.left) < 0) {
+        if ((currentBal > 1) && (currentBalance(root.left) < 0)) {
             root.left = rotateLeft(root.left);
             return rotateRight(root);
         }
 
-        if (balance < -1 && getBalance(root.right) <= 0) {
+        if ((currentBal < -1) && (currentBalance(root.right) <= 0)) {
             return rotateLeft(root);
         }
 
-        if (balance < -1 && getBalance(root.right) > 0) {
+        if ((currentBal < -1) && (currentBalance(root.right) > 0)) {
             root.right = rotateRight(root.right);
             return rotateLeft(root);
         }
@@ -154,7 +164,7 @@ public class AVLTree {
         System.out.print(node.key + " ");
     }
 
-    int treeHeight(Node node) {
+    private int treeHeight(Node node) {
         if (node == null) {
             return 0;
         }
@@ -162,41 +172,41 @@ public class AVLTree {
         return node.height;
     }
  
-    int maxHeight(int heightA, int heightB) {
-        if (heightA > heightB) {
-            return heightA;
-        } else {
-            return heightB;
-        }
-    }
- 
-    Node rotateRight(Node nodeA) {
+    private Node rotateRight(Node nodeA) {
         Node nodeB = nodeA.left;
         Node nodeTmp = nodeB.right;
 
         nodeB.right = nodeA;
         nodeA.left = nodeTmp;
 
-        nodeA.height = maxHeight(treeHeight(nodeA.left), treeHeight(nodeA.right)) + 1;
-        nodeB.height = maxHeight(treeHeight(nodeB.left), treeHeight(nodeB.right)) + 1;
+        if (treeHeight(nodeB.left) > treeHeight(nodeB.right)){
+            nodeB.height = treeHeight(nodeB.left) + 1;
+        } else {
+            nodeB.height = treeHeight(nodeB.right) + 1;
+        }
+        nodeB.height++;
  
         return nodeB;
     }
- 
-    Node rotateLeft(Node nodeA) {
+
+    private Node rotateLeft(Node nodeA) {
         Node nodeB = nodeA.right;
         Node nodeTmp = nodeB.left;
 
         nodeB.left = nodeA;
         nodeA.right = nodeTmp;
 
-        nodeA.height = maxHeight(treeHeight(nodeA.left), treeHeight(nodeA.right)) + 1;
-        nodeB.height = maxHeight(treeHeight(nodeB.left), treeHeight(nodeB.right)) + 1;
+        if (treeHeight(nodeB.left) > treeHeight(nodeB.right)){
+            nodeB.height = treeHeight(nodeB.left) + 1;
+        } else {
+            nodeB.height = treeHeight(nodeB.right) + 1;
+        }
+        nodeB.height++;
 
         return nodeB;
     }
- 
-    int getBalance(Node node) {
+
+    private int currentBalance(Node node) {
         if (node == null) {
             return 0;
         }
@@ -204,15 +214,13 @@ public class AVLTree {
         return (treeHeight(node.left) - treeHeight(node.right));
     }
 
+    private Node minValueNode(Node node) {
+        Node currentNode = node;
 
-
-    Node minValueNode(Node node) {
-        Node current = node;
-
-        while (current.left != null) {
-            current = current.left;
+        while (currentNode.left != null) {
+            currentNode = currentNode.left;
         }
 
-        return current;
+        return currentNode;
     }
 }
