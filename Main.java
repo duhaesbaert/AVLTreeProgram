@@ -31,6 +31,7 @@ public class Main {
                 tree.root = removeInput(tree, Integer.parseInt(input.substring(2, input.length())));
                 break;
             case "e":
+                System.out.println("Finalizando programa.");
                 System.exit(0);
                 break;
             case "h":
