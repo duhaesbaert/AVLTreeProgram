@@ -26,15 +26,20 @@ public class AVLTree {
         }
         node.height++;
 
+        return balanceTreeByValue(node, value);
+    }
+
+    private Node balanceTreeByValue(Node node, int value) {
         int currentBal = currentBalance(node);
 
         if ((currentBal > 1) && (value < node.left.keyValue)) {
             return rotateRight(node);
         }
 
-        if ((currentBal < -1) && value > (node.right.keyValue)) {
+        if ((currentBal < -1) && (value > node.right.keyValue)) {
             return rotateLeft(node);
         }
+
 
         if ((currentBal > 1) && (value > node.left.keyValue)) {
             node.left = rotateLeft(node.left);
@@ -71,72 +76,73 @@ public class AVLTree {
         }
     }
 
-    public Node Delete(Node root, int value) {
-        if (root == null) {
+    public Node Delete(Node node, int value) {
+        if (node == null) {
             System.out.println("Arvore vazia.");
-            return root;
+            return node;
         }
 
-        if (value < root.keyValue) {
-            root.left = Delete(root.left, value);
-        } else if (value > root.keyValue) {
-            root.right = Delete(root.right, value);
+        if (value < node.keyValue) {
+            node.left = Delete(node.left, value);
+        } else if (value > node.keyValue) {
+            node.right = Delete(node.right, value);
         } else {
-            if ((root.left == null) || (root.right == null)) {
+            if ((node.left == null) || (node.right == null)) {
                 Node nodeTmp = null;
 
-                if (nodeTmp == root.left) {
-                    nodeTmp = root.right;
+                if (nodeTmp == node.left) {
+                    nodeTmp = node.right;
                 }else {
-                    nodeTmp = root.left;
+                    nodeTmp = node.left;
                 }
 
                 if (nodeTmp == null) {
-                    nodeTmp = root;
-                    root = null;
+                    node = null;
                 } else {
-                    root = nodeTmp;
+                    node = nodeTmp;
                 }
             } else {
-                Node nodeTmp = findMinValNode(root.right);
-                root.keyValue = nodeTmp.keyValue;
-                root.right = Delete(root.right, nodeTmp.keyValue);
+                Node nodeTmp = findMinValNode(node.right);
+                node.keyValue = nodeTmp.keyValue;
+                node.right = Delete(node.right, nodeTmp.keyValue);
             }
         }
 
-        if (root == null) {
-            return root;
+        if (node == null) {
+            return node;
         }
 
-        if (treeHeight(root.left) > treeHeight(root.right)){
-            root.height = treeHeight(root.left);
+        if (treeHeight(node.left) > treeHeight(node.right)){
+            node.height = treeHeight(node.left);
         } else {
-            root.height = treeHeight(root.right);
+            node.height = treeHeight(node.right);
         }
-        root.height++;
+        node.height++;
 
-        int currentBal = currentBalance(root);
+        return balanceTreeByHeight(node);
+    }
 
-        if ((currentBal > 1) && (currentBalance(root.left) >= 0)) {
-            return rotateRight(root);
+    private Node balanceTreeByHeight(Node node) {
+        int currentBal = currentBalance(node);
 
-        }
-
-        if ((currentBal > 1) && (currentBalance(root.left) < 0)) {
-            root.left = rotateLeft(root.left);
-            return rotateRight(root);
+        if ((currentBal > 1) && (currentBalance(node.left) >= 0)) {
+            return rotateRight(node);
         }
 
-        if ((currentBal < -1) && (currentBalance(root.right) <= 0)) {
-            return rotateLeft(root);
+        if ((currentBal > 1) && (currentBalance(node.left) < 0)) {
+            node.left = rotateLeft(node.left);
+            return rotateRight(node);
         }
 
-        if ((currentBal < -1) && (currentBalance(root.right) > 0)) {
-            root.right = rotateRight(root.right);
-            return rotateLeft(root);
+        if ((currentBal < -1) && (currentBalance(node.right) <= 0)) {
+            return rotateLeft(node);
         }
 
-        return root;
+        if ((currentBal < -1) && (currentBalance(node.right) > 0)) {
+            node.right = rotateRight(node.right);
+            return rotateLeft(node);
+        }
+        return node;
     }
 
     public void PreOrder(Node node) {
