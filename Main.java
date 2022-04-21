@@ -23,16 +23,12 @@ public class Main {
         switch (command) {
             case "i":
                 tree.root = insertInput(tree, Integer.parseInt(input.substring(2, input.length())));
-                tree.PreOrder(tree.root);
-                System.out.println("");
                 break;
             case "b":
                 searchInput(tree, Integer.parseInt(input.substring(2, input.length())));
                 break;
             case "r":
                 tree.root = removeInput(tree, Integer.parseInt(input.substring(2, input.length())));
-                tree.PreOrder(tree.root);
-                System.out.println("");
                 break;
             case "e":
                 System.out.println("Finalizando programa.");
@@ -42,22 +38,11 @@ public class Main {
                 printH = true;
                 break;
             case "p":
-                String value = input.substring(2, input.length());
-                if (value.equals("pre")) {
-                    tree.PreOrder(tree.root);
-                    System.out.println("");
-                } else if (value.equals("post")) {
-                    tree.PostOrder(tree.root);
-                    System.out.println("");
-                } else if (value.equals("in")) {
-                    tree.InOrder(tree.root);
-                    System.out.println("");
-                } else {
-                    System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
-                }
+                printTree(tree, input.substring(2, input.length()));
                 break;
             default:
                 System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
+                break;
         }
 
         initProg(tree, printH);
@@ -78,7 +63,10 @@ public class Main {
     }
 
     private static Node insertInput(AVLTree tree, int value) {
-        return tree.Insert(tree.root, value);
+        Node treeNode = tree.Insert(tree.root, value);
+        tree.PreOrder(tree.root);
+        System.out.println("");
+        return treeNode;
     }
 
     private static void searchInput(AVLTree tree, int value) {
@@ -90,7 +78,24 @@ public class Main {
     }
 
     private static Node removeInput(AVLTree tree, int value) {
-        return tree.Delete(tree.root, value);
+        Node treeNode = tree.Delete(tree.root, value);
+        tree.PreOrder(tree.root);
+        System.out.println("");
+        return treeNode;
     }
 
+    private static void printTree(AVLTree tree, String value) {
+        if (value.equals("pre")) {
+            tree.PreOrder(tree.root);
+            System.out.println("");
+        } else if (value.equals("post")) {
+            tree.PostOrder(tree.root);
+            System.out.println("");
+        } else if (value.equals("in")) {
+            tree.InOrder(tree.root);
+            System.out.println("");
+        } else {
+            System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
+        }
+    }
 }
