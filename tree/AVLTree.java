@@ -97,7 +97,7 @@ public class AVLTree {
                     root = nodeTmp;
                 }
             } else {
-                Node nodeTmp = minValueNode(root.right);
+                Node nodeTmp = findMinValNode(root.right);
                 root.key = nodeTmp.key;
                 root.right = Delete(root.right, nodeTmp.key);
             }
@@ -214,7 +214,7 @@ public class AVLTree {
         return (treeHeight(node.left) - treeHeight(node.right));
     }
 
-    private Node minValueNode(Node node) {
+    private Node findMinValNode(Node node) {
         Node currentNode = node;
 
         while (currentNode.left != null) {
