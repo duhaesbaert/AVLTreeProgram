@@ -1,4 +1,4 @@
-# AVLTreeProgram
+# AVL Tree Program
 
 This is a little program written in Java, with the intention to create an in time execution of a self balancing binary tree(AVL).
 
