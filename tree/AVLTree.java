@@ -50,15 +50,16 @@ public class AVLTree {
     }
 
     public boolean Search(Node root, int value) {
-        if (searchRec(root, value) == 0){
+        if (searchRec(root, value) == null){
             return false;
         }
         return true;
     }
 
-    private int searchRec(Node node, int value) {
-        if (node == null)
-            return 0;
+    private java.lang.Integer searchRec(Node node, int value) {
+        if (node == null) {
+            return null;
+        }
 
         System.out.println("Nodo consultado: " + node.keyValue);
         if (value < node.keyValue) {
