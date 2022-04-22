@@ -1,13 +1,13 @@
 package tree;
 
 public class Node {
-    int keyValue;
+    int value;
     int height;
     Node left;
     Node right;
 
     Node(int d) {
-        keyValue = d;
+        value = d;
         height = 1;
     }
 }

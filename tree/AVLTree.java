@@ -10,9 +10,9 @@ public class AVLTree {
             return (new Node(value));
         }
 
-        if (value < node.keyValue) {
+        if (value < node.value) {
             node.left = Insert(node.left, value);
-        } else if (value > node.keyValue) {
+        } else if (value > node.value) {
             node.right = Insert(node.right, value);
         } else {
             System.out.println("Valor atualmente contido na arvore.");
@@ -27,21 +27,20 @@ public class AVLTree {
     private Node balanceTreeByValue(Node node, int value) {
         int currentBal = currentBalance(node);
 
-        if ((currentBal > 1) && (value < node.left.keyValue)) {
+        if ((currentBal > 1) && (value < node.left.value)) {
             return rotateRight(node);
         }
 
-        if ((currentBal < -1) && (value > node.right.keyValue)) {
+        if ((currentBal < -1) && (value > node.right.value)) {
             return rotateLeft(node);
         }
 
-
-        if ((currentBal > 1) && (value > node.left.keyValue)) {
+        if ((currentBal > 1) && (value > node.left.value)) {
             node.left = rotateLeft(node.left);
             return rotateRight(node);
         }
 
-        if ((currentBal < -1) && (value < node.right.keyValue)) {
+        if ((currentBal < -1) && (value < node.right.value)) {
             node.right = rotateRight(node.right);
             return rotateLeft(node);
         }
@@ -61,25 +60,25 @@ public class AVLTree {
             return null;
         }
 
-        System.out.println("Nodo consultado: " + node.keyValue);
-        if (value < node.keyValue) {
+        System.out.println("Nodo consultado: " + node.value);
+        if (value < node.value) {
             return searchRec(node.left, value);
-        } else if (value > node.keyValue) {
+        } else if (value > node.value) {
             return searchRec(node.right, value);
         } else {
-            return node.keyValue;
+            return node.value;
         }
     }
 
     public Node Delete(Node node, int value) {
         if (node == null) {
-            System.out.println("Árvore vazia.");
+            System.out.println("Valor inserido não contido na árvore.");
             return node;
         }
 
-        if (value < node.keyValue) {
+        if (value < node.value) {
             node.left = Delete(node.left, value);
-        } else if (value > node.keyValue) {
+        } else if (value > node.value) {
             node.right = Delete(node.right, value);
         } else {
             if ((node.left == null) || (node.right == null)) {
@@ -98,8 +97,8 @@ public class AVLTree {
                 }
             } else {
                 Node nodeTmp = findMinValLeaf(node.right);
-                node.keyValue = nodeTmp.keyValue;
-                node.right = Delete(node.right, nodeTmp.keyValue);
+                node.value = nodeTmp.value;
+                node.right = Delete(node.right, nodeTmp.value);
             }
         }
 
@@ -139,7 +138,7 @@ public class AVLTree {
         if (node == null) {
             return;
         }
-        System.out.print(node.keyValue + " ");
+        System.out.print(node.value + " ");
         PreOrder(node.left);
         PreOrder(node.right);
     }
@@ -149,7 +148,7 @@ public class AVLTree {
             return;
         }
         InOrder(node.left);
-        System.out.print(node.keyValue + " ");
+        System.out.print(node.value + " ");
         InOrder(node.right);
     }
 
@@ -159,7 +158,7 @@ public class AVLTree {
         }
         PostOrder(node.left);
         PostOrder(node.right);
-        System.out.print(node.keyValue + " ");
+        System.out.print(node.value + " ");
     }
 
     private int treeHeight(Node node) {
