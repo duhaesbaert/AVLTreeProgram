@@ -19,12 +19,7 @@ public class AVLTree {
             return node;
         }
 
-        if (treeHeight(node.left) > treeHeight(node.right)){
-            node.height = treeHeight(node.left);
-        } else {
-            node.height = treeHeight(node.right);
-        }
-        node.height++;
+        node.height = getHighestBranchPlusOne(node);
 
         return balanceTreeByValue(node, value);
     }
@@ -78,7 +73,7 @@ public class AVLTree {
 
     public Node Delete(Node node, int value) {
         if (node == null) {
-            System.out.println("Arvore vazia.");
+            System.out.println("Árvore vazia.");
             return node;
         }
 
@@ -102,7 +97,7 @@ public class AVLTree {
                     node = nodeTmp;
                 }
             } else {
-                Node nodeTmp = findMinValNode(node.right);
+                Node nodeTmp = findMinValLeaf(node.right);
                 node.keyValue = nodeTmp.keyValue;
                 node.right = Delete(node.right, nodeTmp.keyValue);
             }
@@ -112,12 +107,7 @@ public class AVLTree {
             return node;
         }
 
-        if (treeHeight(node.left) > treeHeight(node.right)){
-            node.height = treeHeight(node.left);
-        } else {
-            node.height = treeHeight(node.right);
-        }
-        node.height++;
+        node.height = getHighestBranchPlusOne(node);
 
         return balanceTreeByHeight(node);
     }
@@ -187,12 +177,7 @@ public class AVLTree {
         nodeB.right = nodeA;
         nodeA.left = nodeTmp;
 
-        if (treeHeight(nodeB.left) > treeHeight(nodeB.right)){
-            nodeB.height = treeHeight(nodeB.left) + 1;
-        } else {
-            nodeB.height = treeHeight(nodeB.right) + 1;
-        }
-        nodeB.height++;
+        nodeB.height = getHighestBranchPlusOne(nodeB);
  
         return nodeB;
     }
@@ -204,14 +189,18 @@ public class AVLTree {
         nodeB.left = nodeA;
         nodeA.right = nodeTmp;
 
-        if (treeHeight(nodeB.left) > treeHeight(nodeB.right)){
-            nodeB.height = treeHeight(nodeB.left) + 1;
-        } else {
-            nodeB.height = treeHeight(nodeB.right) + 1;
-        }
-        nodeB.height++;
+        nodeB.height = getHighestBranchPlusOne(nodeB);
 
         return nodeB;
+    }
+
+    private int getHighestBranchPlusOne(Node node) {
+        if (treeHeight(node.left) > treeHeight(node.right)){
+            node.height = treeHeight(node.left);
+        } else {
+            node.height = treeHeight(node.right);
+        }
+        return node.height + 1;
     }
 
     private int currentBalance(Node node) {
@@ -222,7 +211,7 @@ public class AVLTree {
         return (treeHeight(node.left) - treeHeight(node.right));
     }
 
-    private Node findMinValNode(Node node) {
+    private Node findMinValLeaf(Node node) {
         Node currentNode = node;
 
         while (currentNode.left != null) {
