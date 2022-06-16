@@ -1,3 +1,5 @@
+// Desenvolvido por Eduardo Haesbaert
+
 package Converter;
 
 public class KeyStringConverter {
@@ -14,6 +16,7 @@ public class KeyStringConverter {
         return convertCharToLongKey(letters);
     }
 
+    // Cria uma chave de index numerica utilizando o texto de data recebido.
     public static long ConvertStringDateToKey(String dateKey) {
         return Long.parseLong(dateKey);
     }
@@ -27,6 +30,8 @@ public class KeyStringConverter {
         return Long.parseLong(sb.toString());
     }
 
+    // reduceArraySize é utilizada por ConvertStringToKey para reduzir a chave para uma chave de 6
+    // characteres, 3 iniciais e 3 finais.
     private static char[] reduceArraySize(char[] letters) {
         char[] sixLetters = new char[6];
         int sixLettersIndex = 0;

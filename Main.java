@@ -1,3 +1,5 @@
+// Desenvolvido por Eduardo Haesbaert
+
 import Converter.KeyStringConverter;
 import Person.PersonInfo;
 import tree.*;
@@ -64,26 +66,9 @@ public class Main {
         initProg(tree, name, dob, printH);
     }
 
-    private static void printHelp() {
-        System.out.println("Para realizar uma operação, digite um dos comandos seguido de um número inteiro, separados por um espaço, e aperte enter:");
-        //System.out.println("Inserir(i): i <valor>");
-        System.out.println("Buscar(b): b <valor>");
-        //System.out.println("Remover(r): r <valor>");
-        System.out.println("");
-        //System.out.println("Print(p):");
-        //System.out.println("Pré-ordem: p pre");
-        //System.out.println("Em ordem: p in");
-        //System.out.println("Pós-ordem: p post");
-        //System.out.println("");
-        System.out.println("Para sair, digite e");
-    }
-
+    // Recebe por argumento uma ArvoreAVL, a chave para indexação, e os valores do objeto PersonInfo.
     private static void insertPerson(AVLTree tree, long value, Person.PersonInfo person) {
         tree.Insert(tree.root, value, person);
-    }
-
-    private static Node insertInput(AVLTree tree, long value, Person.PersonInfo person) {
-        return tree.Insert(tree.root, value, person);
     }
 
     private static void searchInput(AVLTree tree, long value) {
@@ -91,25 +76,6 @@ public class Main {
             System.out.println("Valor " + value + " encontrado.");
         } else {
             System.out.println("Valor " + value + " não encontrado.");
-        }
-    }
-
-    private static Node removeInput(AVLTree tree, int value) {
-        return tree.Delete(tree.root, value);
-    }
-
-    private static void printTree(AVLTree tree, String value) {
-        if (value.equals("pre")) {
-            tree.PreOrder(tree.root);
-            System.out.println("");
-        } else if (value.equals("post")) {
-            tree.PostOrder(tree.root);
-            System.out.println("");
-        } else if (value.equals("in")) {
-            tree.InOrder(tree.root);
-            System.out.println("");
-        } else {
-            System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
         }
     }
 
@@ -131,5 +97,42 @@ public class Main {
             insertPerson(treeName, Converter.KeyStringConverter.ConvertStringToKey(p.name), p);
             insertPerson(treeDOB, Converter.KeyStringConverter.ConvertStringDateToKey(p.dateOfBirth.replace("/", "")), p);
         }
+    }
+
+    private static void printHelp() {
+        System.out.println("Para realizar uma operação, digite um dos comandos seguido de um número inteiro, separados por um espaço, e aperte enter:");
+        //System.out.println("Inserir(i): i <valor>");
+        System.out.println("Buscar(b): b <valor>");
+        //System.out.println("Remover(r): r <valor>");
+        System.out.println("");
+        //System.out.println("Print(p):");
+        //System.out.println("Pré-ordem: p pre");
+        //System.out.println("Em ordem: p in");
+        //System.out.println("Pós-ordem: p post");
+        //System.out.println("");
+        System.out.println("Para sair, digite e");
+    }
+
+    private static void printTree(AVLTree tree, String value) {
+        if (value.equals("pre")) {
+            tree.PreOrder(tree.root);
+            System.out.println("");
+        } else if (value.equals("post")) {
+            tree.PostOrder(tree.root);
+            System.out.println("");
+        } else if (value.equals("in")) {
+            tree.InOrder(tree.root);
+            System.out.println("");
+        } else {
+            System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
+        }
+    }
+
+    private static Node insertInput(AVLTree tree, long value, Person.PersonInfo person) {
+        return tree.Insert(tree.root, value, person);
+    }
+
+    private static Node removeInput(AVLTree tree, int value) {
+        return tree.Delete(tree.root, value);
     }
 }

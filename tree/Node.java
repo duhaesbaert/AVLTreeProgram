@@ -2,7 +2,6 @@ package tree;
 
 public class Node {
     long value;
-
     Person.PersonInfo person;
     int height;
     Node left;
