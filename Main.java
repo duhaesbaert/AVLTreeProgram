@@ -1,19 +1,22 @@
+import Converter.KeyStringConverter;
 import Person.PersonInfo;
 import tree.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.util.Scanner;
 
 public class Main {
+    public static AVLTree treeCPF = new AVLTree();
+    public static AVLTree treeName = new AVLTree();
+    public static AVLTree treeDOB = new AVLTree();
+
     public static void main(String[] args) throws IOException {
         //System.out.println(Converter.KeyStringConverter.ConvertStringToKey("eduardo"));
         //System.out.println(Converter.KeyStringConverter.ConvertStringDateToKey("25031994"));
 
-        AVLTree treeCPF = new AVLTree();
-        AVLTree treeName = new AVLTree();
-        AVLTree treeDOB = new AVLTree();
-        initProg(treeCPF, treeName, treeDOB,true);
+        ReadCSVFile("C:\\Users\\Eduardo Haesbaert\\Documents\\GitHub\\AVLTreeProgram\\CSVFiles\\personinfo.csv");
+
+        //initProg(treeCPF, treeName, treeDOB,true);
     }
 
     public static void initProg(AVLTree tree, AVLTree name, AVLTree dob, boolean printH) throws IOException {
@@ -75,6 +78,10 @@ public class Main {
         System.out.println("Para sair, digite e");
     }
 
+    private static void insertPerson(AVLTree tree, long value, Person.PersonInfo person) {
+        tree.Insert(tree.root, value, person);
+    }
+
     private static Node insertInput(AVLTree tree, long value, Person.PersonInfo person) {
         return tree.Insert(tree.root, value, person);
     }
@@ -103,6 +110,26 @@ public class Main {
             System.out.println("");
         } else {
             System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
+        }
+    }
+
+    // ReadCSVFile recebe o caminho de um arquivo para ser lido, lê o respectivo arquivo, adicionando os respectivos
+    // valores a um objeto Person, que será indexado em três instâncias de arvores AVL: CPF, Nome e Data de Nascimento.
+    private static void ReadCSVFile(String path) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(path));
+
+        String line = "";
+        while((line = br.readLine()) != null) {
+            System.out.println(line);
+            String[] personValues = line.split(",");
+
+            // Cria um objeto PersonInfo com as informações obtidas do CSV.
+            Person.PersonInfo p = new Person.PersonInfo(Long.parseLong(personValues[0]), Long.parseLong(personValues[1]), personValues[2], personValues[3], personValues[4]);
+
+            // Indexa os valores nas respectivas arvores de busca.
+            insertPerson(treeCPF, p.cpf, p);
+            insertPerson(treeName, Converter.KeyStringConverter.ConvertStringToKey(p.name), p);
+            insertPerson(treeDOB, Converter.KeyStringConverter.ConvertStringDateToKey(p.dateOfBirth.replace("/", "")), p);
         }
     }
 }

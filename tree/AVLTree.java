@@ -6,7 +6,7 @@ public class AVLTree {
 
     public Node Insert(Node node, long value, Person.PersonInfo person) {
         if (node == null) {
-            System.out.println("Chave " + value + " inserido na arvore. Com valores " + person.toString());
+            System.out.println("Chave " + value + " inserido na arvore.");
             return (new Node(value, person));
         }
 
