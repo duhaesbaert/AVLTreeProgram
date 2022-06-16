@@ -1,13 +1,19 @@
 package tree;
 
 public class Node {
-    int value;
+    long value;
+
+    Person.PersonInfo person;
     int height;
     Node left;
     Node right;
 
-    Node(int d) {
+    // Instancia um novo nodo populando os respectivos valores de node
+    // utlizando o valor recebidos como argumento. Define que a altura
+    // como 1.
+    public Node(long d, Person.PersonInfo p) {
         value = d;
+        person = p;
         height = 1;
     }
 }

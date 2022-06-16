@@ -4,16 +4,16 @@ public class AVLTree {
  
     public Node root;
 
-    public Node Insert(Node node, int value) {
+    public Node Insert(Node node, long value, Person.PersonInfo person) {
         if (node == null) {
-            System.out.println("Valor " + value + " inserido na arvore.");
-            return (new Node(value));
+            System.out.println("Chave " + value + " inserido na arvore. Com valores " + person.toString());
+            return (new Node(value, person));
         }
 
         if (value < node.value) {
-            node.left = Insert(node.left, value);
+            node.left = Insert(node.left, value, person);
         } else if (value > node.value) {
-            node.right = Insert(node.right, value);
+            node.right = Insert(node.right, value, person);
         } else {
             System.out.println("Valor atualmente contido na arvore.");
             return node;
@@ -24,7 +24,7 @@ public class AVLTree {
         return balanceTreeByValue(node, value);
     }
 
-    private Node balanceTreeByValue(Node node, int value) {
+    private Node balanceTreeByValue(Node node, long value) {
         int currentBal = currentBalance(node);
 
         if ((currentBal > 1) && (value < node.left.value)) {
@@ -48,14 +48,11 @@ public class AVLTree {
         return node;
     }
 
-    public boolean Search(Node root, int value) {
-        if (searchRec(root, value) == null){
-            return false;
-        }
-        return true;
+    public boolean Search(Node root, long value) {
+        return searchRec(root, value) != null;
     }
 
-    private java.lang.Integer searchRec(Node node, int value) {
+    private Node searchRec(Node node, long value) {
         if (node == null) {
             return null;
         }
@@ -66,14 +63,14 @@ public class AVLTree {
         } else if (value > node.value) {
             return searchRec(node.right, value);
         } else {
-            return node.value;
+            return node;
         }
     }
 
-    public Node Delete(Node node, int value) {
+    public Node Delete(Node node, long value) {
         if (node == null) {
             System.out.println("Valor inserido não contido na árvore.");
-            return node;
+            return null;
         }
 
         if (value < node.value) {
@@ -103,7 +100,7 @@ public class AVLTree {
         }
 
         if (node == null) {
-            return node;
+            return null;
         }
 
         node.height = getHighestBranchPlusOne(node);
