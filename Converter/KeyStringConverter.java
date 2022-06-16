@@ -18,7 +18,7 @@ public class KeyStringConverter {
 
     // Cria uma chave de index numerica utilizando o texto de data recebido.
     public static long ConvertStringDateToKey(String dateKey) {
-        return Long.parseLong(dateKey);
+        return Long.parseLong(dateKey.replace("/", ""));
     }
     private static long convertCharToLongKey(char[] letters){
         StringBuilder sb = new StringBuilder();

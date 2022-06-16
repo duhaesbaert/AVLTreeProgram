@@ -6,6 +6,9 @@ public class AVLTree {
  
     public Node root;
 
+    // Realiza uma varredura na arvore para encontrar onde o valor deverá ser inserido na arvore.
+    // Uma vez que encontrado, insere o nodo e realiza rotações para esquerda/direita conforme necessário para balancear
+    // a arvore.
     public Node Insert(Node node, long value, Person.PersonInfo person) {
         if (node == null) {
             System.out.println("Chave " + value + " inserido na arvore.");
@@ -26,6 +29,7 @@ public class AVLTree {
         return balanceTreeByValue(node, value);
     }
 
+    // Utilizado pelo método Insert, realizando balanceamento dos nodos de acordo com seus valores.
     private Node balanceTreeByValue(Node node, long value) {
         int currentBal = currentBalance(node);
 
@@ -50,25 +54,82 @@ public class AVLTree {
         return node;
     }
 
-    public boolean Search(Node root, long value) {
-        return searchRec(root, value) != null;
+    // Realiza busca dentro da arvore por um valor especifico completo.
+    public boolean Search(Node root, long value, boolean print) {
+        return searchRec(root, value, print) != null;
     }
 
-    private Node searchRec(Node node, long value) {
+    public Node SearchRange(Node root, long value, long value2) {
+        return searchRec(root, value, false);
+    }
+
+    private Node searchRec(Node node, long value, boolean print) {
         if (node == null) {
             return null;
         }
 
-        System.out.println("Nodo consultado: " + node.value);
+        if (print) {
+            System.out.println(node.person.dateOfBirth);
+        }
         if (value < node.value) {
-            return searchRec(node.left, value);
+            return searchRec(node.left, value, print);
         } else if (value > node.value) {
-            return searchRec(node.right, value);
+            return searchRec(node.right, value, print);
         } else {
             return node;
         }
     }
 
+    private int treeHeight(Node node) {
+        if (node == null) {
+            return 0;
+        }
+
+        return node.height;
+    }
+ 
+    private Node rotateRight(Node nodeA) {
+        Node nodeB = nodeA.left;
+        Node nodeTmp = nodeB.right;
+
+        nodeB.right = nodeA;
+        nodeA.left = nodeTmp;
+
+        nodeB.height = getHighestBranchPlusOne(nodeB);
+ 
+        return nodeB;
+    }
+
+    private Node rotateLeft(Node nodeA) {
+        Node nodeB = nodeA.right;
+        Node nodeTmp = nodeB.left;
+
+        nodeB.left = nodeA;
+        nodeA.right = nodeTmp;
+
+        nodeB.height = getHighestBranchPlusOne(nodeB);
+
+        return nodeB;
+    }
+
+    private int getHighestBranchPlusOne(Node node) {
+        if (treeHeight(node.left) > treeHeight(node.right)){
+            node.height = treeHeight(node.left);
+        } else {
+            node.height = treeHeight(node.right);
+        }
+        return node.height + 1;
+    }
+
+    private int currentBalance(Node node) {
+        if (node == null) {
+            return 0;
+        }
+
+        return (treeHeight(node.left) - treeHeight(node.right));
+    }
+
+    // TODO: REMOVE FROM CODE
     public Node Delete(Node node, long value) {
         if (node == null) {
             System.out.println("Valor inserido não contido na árvore.");
@@ -159,56 +220,6 @@ public class AVLTree {
         PostOrder(node.right);
         System.out.print(node.value + " ");
     }
-
-    private int treeHeight(Node node) {
-        if (node == null) {
-            return 0;
-        }
-
-        return node.height;
-    }
- 
-    private Node rotateRight(Node nodeA) {
-        Node nodeB = nodeA.left;
-        Node nodeTmp = nodeB.right;
-
-        nodeB.right = nodeA;
-        nodeA.left = nodeTmp;
-
-        nodeB.height = getHighestBranchPlusOne(nodeB);
- 
-        return nodeB;
-    }
-
-    private Node rotateLeft(Node nodeA) {
-        Node nodeB = nodeA.right;
-        Node nodeTmp = nodeB.left;
-
-        nodeB.left = nodeA;
-        nodeA.right = nodeTmp;
-
-        nodeB.height = getHighestBranchPlusOne(nodeB);
-
-        return nodeB;
-    }
-
-    private int getHighestBranchPlusOne(Node node) {
-        if (treeHeight(node.left) > treeHeight(node.right)){
-            node.height = treeHeight(node.left);
-        } else {
-            node.height = treeHeight(node.right);
-        }
-        return node.height + 1;
-    }
-
-    private int currentBalance(Node node) {
-        if (node == null) {
-            return 0;
-        }
-
-        return (treeHeight(node.left) - treeHeight(node.right));
-    }
-
     private Node findMinValLeaf(Node node) {
         Node currentNode = node;
 
