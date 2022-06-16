@@ -13,12 +13,9 @@ public class Main {
     public static AVLTree treeDOB = new AVLTree();
 
     public static void main(String[] args) throws IOException {
-        /*
-        System.out.println(Converter.KeyStringConverter.ConvertStringToKey("eduardo"));
-        System.out.println(Converter.KeyStringConverter.ConvertStringDateToKey("25031994"));\
-
         ReadCSVFile("C:\\Users\\Eduardo Haesbaert\\Documents\\GitHub\\AVLTreeProgram\\CSVFiles\\personinfo.csv");
 
+        /*
         searchCPF(treeCPF, 38787549069L);
         searchCPF(treeCPF, 36469186084L);
         searchCPF(treeCPF, 40618933000L);
@@ -28,10 +25,14 @@ public class Main {
         searchName(treeName, "julia");
         searchName(treeName, "juliana");
 
-        searchDate(treeDOB, "20/02/1992","25/09/1993");
-        */
+        searchDate(treeDOB, "20/02/1992","25/03/1994");
+        System.out.println("");
+        searchDate(treeDOB, "20/03/1992","29/03/2000");
+        System.out.println("");
+        searchDate(treeDOB, "20/02/1992","25/09/1999");
 
-        //initProg(treeCPF, treeName, treeDOB,true);
+        initProg(treeCPF, treeName, treeDOB,true);
+        */
     }
 
     public static void initProg(AVLTree tree, AVLTree name, AVLTree dob, boolean printH) throws IOException {
@@ -49,7 +50,7 @@ public class Main {
 
         switch (command) {
             case "b":
-                searchInput(tree, Integer.parseInt(input.substring(2, input.length())));
+                //searchInput(tree, Integer.parseInt(input.substring(2, input.length())));
                 break;
             case "e":
                 System.out.println("Finalizando programa.");
@@ -74,6 +75,8 @@ public class Main {
         tree.root = tree.Insert(tree.root, value, person);
     }
 
+    // searchCPF efetua uma busca na arvore buscando pelo valor especifico recebido por argumento
+    // e retorna uma mensagem de confirmação para o usuário.
     private static void searchCPF(AVLTree tree, long value) {
         if (tree.Search(tree.root, value, false)) {
             System.out.println("Valor " + value + " encontrado.");
@@ -82,6 +85,8 @@ public class Main {
         }
     }
 
+    // searchName efetua uma busca pelo name de PersonInfo e retorna para o usuário
+    // uma mensagem de confirmação.
     private static void searchName(AVLTree tree, String name) {
         long key = Converter.KeyStringConverter.ConvertStringToKey(name);
 
@@ -92,12 +97,19 @@ public class Main {
         }
     }
 
+    // searchDate efetua uma busca dentro da arvore por um range de datas, entre data1 e data2
+    // seguind a ordem estabelecida pela arvore. Busca pela primeira data, ao encontra-la efetua uma segunda
+    // busca, partindo de date1, exibindo todas as datas encontradas até date2.
     private static void searchDate(AVLTree tree, String date1, String date2) {
         long key1 = Converter.KeyStringConverter.ConvertStringDateToKey(date1);
         long key2 = Converter.KeyStringConverter.ConvertStringDateToKey(date2);
 
-        Node searchFrom = tree.SearchRange(tree.root, key1, key2);
-        tree.Search(searchFrom, key2, true);
+        if (key1 > key2) {
+            System.out.println("Erro: Data inicial maior do que data final. Por favor insira uma data inicial maior do que a data final");
+        } else {
+            Node searchFrom = tree.SearchRange(tree.root, key1, key2);
+            tree.Search(searchFrom, key2, true);
+        }
     }
 
     // ReadCSVFile recebe o caminho de um arquivo para ser lido, lê o respectivo arquivo, adicionando os respectivos
@@ -147,21 +159,5 @@ public class Main {
         } else {
             System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
         }
-    }
-
-    private static Node insertInput(AVLTree tree, long value, Person.PersonInfo person) {
-        return tree.Insert(tree.root, value, person);
-    }
-
-    private static void searchInput(AVLTree tree, long value) {
-        if (tree.Search(tree.root, value, false)) {
-            System.out.println("Valor " + value + " encontrado.");
-        } else {
-            System.out.println("Valor " + value + " não encontrado.");
-        }
-    }
-
-    private static Node removeInput(AVLTree tree, int value) {
-        return tree.Delete(tree.root, value);
     }
 }

@@ -54,13 +54,12 @@ public class AVLTree {
         return node;
     }
 
-    // Realiza busca dentro da arvore por um valor especifico completo.
+    // Realiza busca dentro da arvore por um valor especifico. Recebe como
+    // argumento o root node, valor pelo qual estará buscando e também um valor booleano
+    // indicando se os valores visitados devem ou não ser exibidos.
+    // Retorna um booleano informando se o valor foi ou não encontrado.
     public boolean Search(Node root, long value, boolean print) {
         return searchRec(root, value, print) != null;
-    }
-
-    public Node SearchRange(Node root, long value, long value2) {
-        return searchRec(root, value, false);
     }
 
     private Node searchRec(Node node, long value, boolean print) {
@@ -75,6 +74,32 @@ public class AVLTree {
             return searchRec(node.left, value, print);
         } else if (value > node.value) {
             return searchRec(node.right, value, print);
+        } else {
+            return node;
+        }
+    }
+
+    // Realiza a busca dentor da arvore por um valor especifico. Caso
+    // o valor seja encontrado, retorna o Node onde foi encontrado.
+    public Node SearchRange(Node root, long value, long value2) {
+        Node ret = searchRec(root, value, false);
+
+        if (ret == null) {
+            ret = findNextInRange(root, value, value2, false);
+        }
+
+        return ret;
+    }
+
+    private Node findNextInRange(Node node, long value, long value2, boolean print) {
+        if (node == null) {
+            return null;
+        }
+
+        if (value < node.value) {
+            return searchRec(node.right, value2, true);
+        } else if (value > node.value) {
+            return findNextInRange(node.right, value, value2, print);
         } else {
             return node;
         }
@@ -129,7 +154,6 @@ public class AVLTree {
         return (treeHeight(node.left) - treeHeight(node.right));
     }
 
-    // TODO: REMOVE FROM CODE
     public Node Delete(Node node, long value) {
         if (node == null) {
             System.out.println("Valor inserido não contido na árvore.");
