@@ -13,7 +13,6 @@ public class AVLTree {
     // a arvore.
     public Node Insert(Node node, long value, Person.PersonInfo[] person, boolean updatable) {
         if (node == null) {
-            System.out.println("Chave " + value + " inserido na arvore.");
             return (new Node(value, person));
         }
 
@@ -24,7 +23,6 @@ public class AVLTree {
         } else {
             if (updatable) {
                 node.person = concatArrays(node.person, person);
-                System.out.println("Chave " + value + " inserido na arvore.");
             }
             return node;
         }
