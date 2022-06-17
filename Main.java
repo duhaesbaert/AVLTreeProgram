@@ -17,6 +17,7 @@ public class Main {
     public static AVLTree treeCPF = new AVLTree();
     public static AVLTree treeName = new AVLTree();
     public static AVLTree treeDOB = new AVLTree();
+    public static String viewContent = "";
 
     public static void main(String[] args) throws IOException {
         initProg(true);
@@ -260,7 +261,7 @@ public class Main {
 
     // Cria uma arvore para ser exibida em CLI com uma visulização amigavel,
     // exibindo a arvore da esquerda para a direita
-    private static void prettyPrintTree(Node root, int space, String field) {
+    public static void prettyPrintTree(Node root, int space, String field) {
         if (root == null) {
             return;
         }
@@ -268,22 +269,28 @@ public class Main {
         space += 5;
         prettyPrintTree(root.right, space, field);
         System.out.println();
+        viewContent += "\n";
 
         for (int i = 5; i < space; i++) {
-            System.out.print(' ');
+            System.out.print(" ");
+            viewContent += " ";
         }
 
         if (field.equals("name")) {
             for (int i = 0; i <= root.person.length-1; i++) {
                 System.out.print(root.person[i].name + ";");
+                viewContent += root.person[i].name + ";";
             }
         } else if (field.equals("date")) {
             System.out.print(root.person[0].dateOfBirth);
+            viewContent += root.person[0].dateOfBirth;
         } else {
             System.out.print(root.person[0].cpf);
+            viewContent += root.person[0].cpf;
         }
 
         System.out.println();
+        viewContent += "\n";
         prettyPrintTree(root.left, space, field);
     }
 
