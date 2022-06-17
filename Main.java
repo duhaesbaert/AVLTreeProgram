@@ -101,14 +101,14 @@ public class Main {
                 String[] argArr = input.substring(2, input.length()).split(" ");
                 searchDate(treeDOB, argArr[0], argArr[1]);
                 break;
-            case "p":
+            case "v":
                 String args = input.substring(2, input.length());
-                if (args == "nome" || args == "nomes") {
-                    printTree(treeName);
-                } else if(args == "data" || args == "datas") {
-                    printTree(treeDOB);
+                if (args.equals("nome") || args.equals("nomes")) {
+                    prettyPrintTree(treeName.root, 0, 5, "name");
+                } else if(args.equals("data") || args.equals("datas")) {
+                    prettyPrintTree(treeDOB.root, 0, 5, "date");
                 } else {
-                    printTree(treeCPF);
+                    prettyPrintTree(treeCPF.root, 0, 5, "cpf");
                 }
                 break;
             default:
@@ -228,14 +228,37 @@ public class Main {
         System.out.println("Buscar por CPF(b): b numero_de_cpf");
         System.out.println("Buscar por inicio do nome(n): b tres_primeiras_letras");
         System.out.println("Buscar por intervalo de datas(d): d data_inicio data_fim");
-        System.out.println("Exibir Estado atual dos indexes(p cpf, p nome ou p data)");
+        System.out.println("Visualizar indexes(v cpf, v nome ou v data)");
         System.out.println("Executar testes automatizados(r)");
         System.out.println("Para sair, digite e");
     }
 
-    private static void printTree(AVLTree tree) {
-            tree.InOrder(tree.root);
-            System.out.println("");
+    private static void prettyPrintTree(Node root, int space, int height, String field) {
+        if (root == null) {
+            return;
+        }
+
+        space += height;
+
+        prettyPrintTree(root.right, space, height, field);
+        System.out.println();
+
+        for (int i = height; i < space; i++) {
+            System.out.print(' ');
+        }
+
+        if (field.equals("name")) {
+            for (int i = 0; i <= root.person.length-1; i++) {
+                System.out.print(root.person[i].name + ";");
+            }
+        } else if (field.equals("date")) {
+            System.out.print(root.person[0].dateOfBirth);
+        } else {
+            System.out.print(root.person[0].cpf);
+        }
+
+        System.out.println();
+        prettyPrintTree(root.left, space, height, field);
     }
 
     private static void runAutomatedTests() throws IOException {
