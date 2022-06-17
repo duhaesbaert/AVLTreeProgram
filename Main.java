@@ -243,7 +243,6 @@ public class Main {
         System.out.println("Abrir UI(f)");
         System.out.println("Utilizar CLI(c)");
         System.out.println("Para sair, digite e");
-        //https://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram-in-java
     }
 
     // Exibe uma mensagem de ajuda com os comandos a serem utilizados na CLI
