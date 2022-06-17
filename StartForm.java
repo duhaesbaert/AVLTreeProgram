@@ -3,6 +3,7 @@ import Person.PersonInfo;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class StartForm {
     public JTabbedPane tabbedPane1;
@@ -20,6 +21,10 @@ public class StartForm {
     private JTextField textNome;
     private JButton buscarNomeButton;
     private JTextArea textAreaNome;
+    private JTextField textFieldIniDate;
+    private JButton dateButton;
+    private JTextField textFieldEndDate;
+    private JTextArea textAreaDate;
 
     public StartForm() {
         button1.addActionListener(new ActionListener() {
@@ -81,6 +86,22 @@ public class StartForm {
                     }
                 }
                 textAreaNome.setText(txContent);
+            }
+        });
+        dateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String txContent = "";
+                List<PersonInfo> list = Main.searchDate(Main.treeDOB, textFieldIniDate.getText(), textFieldEndDate.getText());
+                if (list != null) {
+                    for (int i = 0; i <= list.size()-1; i++) {
+                        Person.PersonInfo person = list.get(i);
+                        txContent += "CPF: " + person.cpf + ", RG: " + person.rg + ", Nome: " + person.name + ", Data de Nascimento(DD/MM/AAAA): " + person.dateOfBirth + ", Cidate de Nascimento: " + person.cityOfBirth + "\n";
+                    }
+                } else {
+                    txContent = "Nenhum registro encontrado para o criterio inserido";
+                }
+                textAreaDate.setText(txContent);
             }
         });
     }

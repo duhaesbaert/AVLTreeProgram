@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -16,11 +18,12 @@ public class Main {
     public static AVLTree treeName = new AVLTree();
     public static AVLTree treeDOB = new AVLTree();
 
-
     public static void main(String[] args) throws IOException {
         initProg(true);
     }
 
+    // Inicia o programa e provê um CLI para o usuário selecionar
+    // se deseja utilizar CLI ou GUI.
     public static void initProg(boolean printH) throws IOException {
         if (printH) {
             printHelp();
@@ -55,6 +58,7 @@ public class Main {
         initProg(printH);
     }
 
+    // Instancia e inicia o formulário GUI.
     private static void startMyForm() {
         JFrame frame = new JFrame("StartForm");
         frame.setContentPane(new StartForm().tabbedPane1);
@@ -63,6 +67,7 @@ public class Main {
         frame.setVisible(true);
     }
 
+    // Função de controle para as ações possíveis na CLI.
     private static void startCLI(boolean printH) throws IOException {
         if (printH) {
             printHelpCLI();
@@ -80,7 +85,12 @@ public class Main {
                 initProg(true);
                 break;
             case "c":
-                ReadCSVFile(input.substring(2, input.length()));
+                String arg = input.substring(2, input.length());
+                if (arg.equals("sample")) {
+                    arg = useSampleFile();
+                }
+
+                ReadCSVFile(arg);
                 printH = true;
                 break;
             case "r":
@@ -99,23 +109,24 @@ public class Main {
                 break;
             case "n":
                 Person.PersonInfo[] ps = searchNameByKey(treeName, input.substring(2, input.length()));
-                for (int i = 0; i<= ps.length-1; i++) {
-                    printAllData(ps[i]);
+                if (ps != null) {
+                    for (int i = 0; i<= ps.length-1; i++) {
+                        printAllData(ps[i]);
+                    }
                 }
-
                 break;
             case "d":
                 String[] argArr = input.substring(2, input.length()).split(" ");
-                searchDate(treeDOB, argArr[0], argArr[1]);
+                List<Person.PersonInfo> listP = searchDate(treeDOB, argArr[0], argArr[1]);
                 break;
             case "v":
                 String args = input.substring(2, input.length());
                 if (args.equals("nome") || args.equals("nomes")) {
-                    prettyPrintTree(treeName.root, 0, 5, "name");
+                    prettyPrintTree(treeName.root, 0, "name");
                 } else if(args.equals("data") || args.equals("datas")) {
-                    prettyPrintTree(treeDOB.root, 0, 5, "date");
+                    prettyPrintTree(treeDOB.root, 0, "date");
                 } else {
-                    prettyPrintTree(treeCPF.root, 0, 5, "cpf");
+                    prettyPrintTree(treeCPF.root, 0, "cpf");
                 }
                 break;
             default:
@@ -134,7 +145,7 @@ public class Main {
     // searchCPF efetua uma busca na arvore buscando pelo valor especifico recebido por argumento
     // e retorna uma mensagem de confirmação para o usuário.
     public static Person.PersonInfo searchCPF(AVLTree tree, long value) {
-        Node fNode = tree.Search(tree.root, value, false);
+        Node fNode = tree.Search(tree.root, value, false, null);
         if (fNode != null){
             System.out.println("Registro encontrado para " + value);
             return fNode.person[0];
@@ -151,7 +162,7 @@ public class Main {
             System.out.println("Por favor, digite ao menos 3 caracteres para realizar a busca.");
         } else {
             long key = Converter.KeyStringConverter.ConvertStringToShortKey(nameKey);
-            Node fNode = tree.Search(tree.root, key, false);
+            Node fNode = tree.Search(tree.root, key, false, null);
 
             if (fNode != null) {
                 System.out.println("Registros encontrados para \"" + nameKey + "\": ");
@@ -166,16 +177,21 @@ public class Main {
     // searchDate efetua uma busca dentro da arvore por um range de datas, entre data1 e data2
     // seguind a ordem estabelecida pela arvore. Busca pela primeira data, ao encontra-la efetua uma segunda
     // busca, partindo de date1, exibindo todas as datas encontradas até date2.
-    private static void searchDate(AVLTree tree, String date1, String date2) {
+    public static List<Person.PersonInfo> searchDate(AVLTree tree, String date1, String date2) {
         long key1 = Converter.KeyStringConverter.ConvertStringDateToKey(date1);
         long key2 = Converter.KeyStringConverter.ConvertStringDateToKey(date2);
 
         if (key1 > key2) {
             System.out.println("Erro: Data inicial maior do que data final. Por favor insira uma data inicial maior do que a data final");
+            return null;
         } else {
-            System.out.println("Registros encontrados entre " + date1 + " e " + date2);
-            Node searchFrom = tree.SearchRange(tree.root, key1, key2);
-            tree.Search(searchFrom, key2, true);
+            List<Person.PersonInfo> personas = new ArrayList<Person.PersonInfo>();
+
+            System.out.println("Registros entre " + date1 + " e " + date2);
+            Node searchFrom = tree.SearchRange(tree.root, key1, key2, personas);
+            tree.Search(searchFrom, key2, true, personas);
+
+            return personas;
         }
     }
 
@@ -220,6 +236,7 @@ public class Main {
         System.out.println("CPF: " + person.cpf + ", RG: " + person.rg + ", Nome: " + person.name + ", Data de Nascimento(DD/MM/AAAA): " + person.dateOfBirth + ", Cidate de Nascimento: " + person.cityOfBirth);
     }
 
+    // Exibe uma mensagem de ajuda com os comandos a serem utilizados na CLI
     private static void printHelp() {
         System.out.println("Digite o comando de acordo com a operação que deseja executar e pressione enter:");
         System.out.println("Abrir UI(f)");
@@ -228,6 +245,7 @@ public class Main {
         //https://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram-in-java
     }
 
+    // Exibe uma mensagem de ajuda com os comandos a serem utilizados na CLI
     private static void printHelpCLI() {
         System.out.println("Bem vindo a CLI do programa. Digite o comando desejado e pressione enter:");
         System.out.println("Voltar para o inicio(i)");
@@ -240,17 +258,18 @@ public class Main {
         System.out.println("Para sair, digite e");
     }
 
-    private static void prettyPrintTree(Node root, int space, int height, String field) {
+    // Cria uma arvore para ser exibida em CLI com uma visulização amigavel,
+    // exibindo a arvore da esquerda para a direita
+    private static void prettyPrintTree(Node root, int space, String field) {
         if (root == null) {
             return;
         }
 
-        space += height;
-
-        prettyPrintTree(root.right, space, height, field);
+        space += 5;
+        prettyPrintTree(root.right, space, field);
         System.out.println();
 
-        for (int i = height; i < space; i++) {
+        for (int i = 5; i < space; i++) {
             System.out.print(' ');
         }
 
@@ -265,29 +284,62 @@ public class Main {
         }
 
         System.out.println();
-        prettyPrintTree(root.left, space, height, field);
+        prettyPrintTree(root.left, space, field);
     }
 
+    // Retorna o caminho para o arquivo CSV de exemplo criado.
     public static String useSampleFile() {
         Path p = Paths.get("personinfo.csv");
         return p.toAbsolutePath().toString();
     }
 
+    // Executa testes automatizados importando um arquivo de exemplo CSV,
+    // e efetua testes de busca exibindo os resultados na tela.
     private static void runAutomatedTests() throws IOException {
         int opsCount = ReadCSVFile(useSampleFile());
         if (opsCount > 0) {
-            searchCPF(treeCPF, 38787549069L);
-            searchCPF(treeCPF, 36469186084L);
-            searchCPF(treeCPF, 40618933000L);
-            searchCPF(treeCPF, 40239840284L);
-
+            Person.PersonInfo p = searchCPF(treeCPF, 38787549069L);
+            if (p != null) {
+                printAllData(p);
+            }
+            p = searchCPF(treeCPF, 36469186084L);
+            if (p != null) {
+                printAllData(p);
+            }
+            p = searchCPF(treeCPF, 40618933000L);
+            if (p != null) {
+                printAllData(p);
+            }
+            p = searchCPF(treeCPF, 40239840284L);
+            if (p != null) {
+                printAllData(p);
+            }
             System.out.println("");
 
-            searchNameByKey(treeName, "edu");
-            searchNameByKey(treeName, "ren");
-            searchNameByKey(treeName, "jul");
-            searchNameByKey(treeName, "arm");
-
+            Person.PersonInfo[] ps = searchNameByKey(treeName, "edu");
+            if (ps != null) {
+                for (int i = 0; i<= ps.length-1; i++) {
+                    printAllData(ps[i]);
+                }
+            }
+            ps = searchNameByKey(treeName, "ren");
+            if (ps != null) {
+                for (int i = 0; i<= ps.length-1; i++) {
+                    printAllData(ps[i]);
+                }
+            }
+            ps = searchNameByKey(treeName, "jul");
+            if (ps != null) {
+                for (int i = 0; i<= ps.length-1; i++) {
+                    printAllData(ps[i]);
+                }
+            }
+            ps = searchNameByKey(treeName, "arm");
+            if (ps != null) {
+                for (int i = 0; i<= ps.length-1; i++) {
+                    printAllData(ps[i]);
+                }
+            }
             System.out.println("");
 
             searchDate(treeDOB, "20/02/1992","25/03/1994");
