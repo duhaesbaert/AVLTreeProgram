@@ -172,23 +172,40 @@ public class Main {
 
     // ReadCSVFile recebe o caminho de um arquivo para ser lido, lê o respectivo arquivo, adicionando os respectivos
     // valores a um objeto Person, que será indexado em três instâncias de arvores AVL: CPF, Nome e Data de Nascimento.
-    private static void ReadCSVFile(String path) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(path));
+    private static int ReadCSVFile(String path) throws IOException {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(path));
 
-        String line = "";
-        while((line = br.readLine()) != null) {
-            String[] personValues = line.split(",");
+            String line = "";
+            int opsCount = 0;
+            while((line = br.readLine()) != null) {
+                String[] personValues = line.split(",");
 
-            // Cria um objeto PersonInfo com as informações obtidas do CSV.
-            Person.PersonInfo[] pArr = new Person.PersonInfo[1];
-            Person.PersonInfo p = new Person.PersonInfo(Long.parseLong(personValues[0]), Long.parseLong(personValues[1]), personValues[2], personValues[3], personValues[4]);
-            pArr[0] = p;
+                // Cria um objeto PersonInfo com as informações obtidas do CSV.
+                Person.PersonInfo[] pArr = new Person.PersonInfo[1];
+                Person.PersonInfo p = new Person.PersonInfo(Long.parseLong(personValues[0]), Long.parseLong(personValues[1]), personValues[2], personValues[3], personValues[4]);
+                pArr[0] = p;
 
-            // Indexa os valores nas respectivas arvores de busca.
-            insertPerson(treeCPF, p.cpf, pArr, false);
-            insertPerson(treeName, Converter.KeyStringConverter.ConvertStringToShortKey(p.name), pArr, true);
-            insertPerson(treeDOB, Converter.KeyStringConverter.ConvertStringDateToKey(p.dateOfBirth), pArr, false);
+                // Indexa os valores nas respectivas arvores de busca.
+                insertPerson(treeCPF, p.cpf, pArr, false);
+                insertPerson(treeName, Converter.KeyStringConverter.ConvertStringToShortKey(p.name), pArr, true);
+                insertPerson(treeDOB, Converter.KeyStringConverter.ConvertStringDateToKey(p.dateOfBirth), pArr, false);
+                opsCount++;
+            }
+
+            if (opsCount > 0) {
+                System.out.println("Arquivo importado com sucesso. " + opsCount + " registros indexados.");
+            } else {
+                System.out.println(opsCount + " registros indexados. Verifique o conteúdo do arquivo.");
+            }
+
+            return opsCount;
+        } catch (IOException e) {
+            int opsCount = 0;
+            System.out.println("Arquivo não encontrado.");
+            return opsCount;
         }
+
     }
 
     // Recebe por argumento um PersonInfo e realiza um print no terminal com as informações do objeto formatadas apropriadamente.
