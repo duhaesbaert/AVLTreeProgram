@@ -6,6 +6,8 @@ import tree.*;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -172,10 +174,9 @@ public class Main {
 
     // ReadCSVFile recebe o caminho de um arquivo para ser lido, lê o respectivo arquivo, adicionando os respectivos
     // valores a um objeto Person, que será indexado em três instâncias de arvores AVL: CPF, Nome e Data de Nascimento.
-    private static int ReadCSVFile(String path) throws IOException {
+    public static int ReadCSVFile(String path) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
-
             String line = "";
             int opsCount = 0;
             while((line = br.readLine()) != null) {
@@ -201,9 +202,8 @@ public class Main {
 
             return opsCount;
         } catch (IOException e) {
-            int opsCount = 0;
             System.out.println("Arquivo não encontrado.");
-            return opsCount;
+            return 0;
         }
 
     }
@@ -239,27 +239,32 @@ public class Main {
     }
 
     private static void runAutomatedTests() throws IOException {
-        ReadCSVFile("C:\\Users\\Eduardo Haesbaert\\Documents\\GitHub\\AVLTreeProgram\\CSVFiles\\personinfo.csv");
+        Path p = Paths.get("personinfo.csv");
+        int opsCount = ReadCSVFile(p.toAbsolutePath().toString());
+        if (opsCount > 0) {
+            searchCPF(treeCPF, 38787549069L);
+            searchCPF(treeCPF, 36469186084L);
+            searchCPF(treeCPF, 40618933000L);
+            searchCPF(treeCPF, 40239840284L);
 
-        searchCPF(treeCPF, 38787549069L);
-        searchCPF(treeCPF, 36469186084L);
-        searchCPF(treeCPF, 40618933000L);
-        searchCPF(treeCPF, 40239840284L);
+            System.out.println("");
 
-        System.out.println("");
+            searchNameByKey(treeName, "edu");
+            searchNameByKey(treeName, "ren");
+            searchNameByKey(treeName, "jul");
+            searchNameByKey(treeName, "arm");
 
-        searchNameByKey(treeName, "edu");
-        searchNameByKey(treeName, "ren");
-        searchNameByKey(treeName, "jul");
-        searchNameByKey(treeName, "arm");
+            System.out.println("");
 
-        System.out.println("");
+            searchDate(treeDOB, "20/02/1992","25/03/1994");
+            System.out.println("");
+            searchDate(treeDOB, "20/03/1992","29/03/2000");
+            System.out.println("");
+            searchDate(treeDOB, "20/02/1992","25/09/1999");
+        } else {
+            System.out.println("Erro ao localizar arquivo de testes a ser importado.");
+        }
 
-        searchDate(treeDOB, "20/02/1992","25/03/1994");
-        System.out.println("");
-        searchDate(treeDOB, "20/03/1992","29/03/2000");
-        System.out.println("");
-        searchDate(treeDOB, "20/02/1992","25/09/1999");
     }
 
 }
