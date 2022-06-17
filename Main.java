@@ -92,10 +92,17 @@ public class Main {
                 System.exit(0);
                 break;
             case "b":
-                searchCPF(treeCPF, Long.parseLong(input.substring(2, input.length())));
+                Person.PersonInfo p = searchCPF(treeCPF, Long.parseLong(input.substring(2, input.length())));
+                if (p != null) {
+                    printAllData(p);
+                }
                 break;
             case "n":
-                searchNameByKey(treeName, input.substring(2, input.length()));
+                Person.PersonInfo[] ps = searchNameByKey(treeName, input.substring(2, input.length()));
+                for (int i = 0; i<= ps.length-1; i++) {
+                    printAllData(ps[i]);
+                }
+
                 break;
             case "d":
                 String[] argArr = input.substring(2, input.length()).split(" ");
@@ -126,19 +133,20 @@ public class Main {
 
     // searchCPF efetua uma busca na arvore buscando pelo valor especifico recebido por argumento
     // e retorna uma mensagem de confirmação para o usuário.
-    private static void searchCPF(AVLTree tree, long value) {
+    public static Person.PersonInfo searchCPF(AVLTree tree, long value) {
         Node fNode = tree.Search(tree.root, value, false);
         if (fNode != null){
             System.out.println("Registro encontrado para " + value);
-            printAllData(fNode.person[0]);
+            return fNode.person[0];
         } else {
             System.out.println("Nenhum registro encontrado com CPF " + value);
+            return null;
         }
     }
 
     // searchNameByKey efetua uma busca por uma chave de 3 characteres na arvore e
     // retorna para uma lista de PersonInfo que estão relacionadas ao parametro de busca.
-    private static void searchNameByKey(AVLTree tree, String nameKey) {
+    public static Person.PersonInfo[] searchNameByKey(AVLTree tree, String nameKey) {
         if (nameKey.length() < 3) {
             System.out.println("Por favor, digite ao menos 3 caracteres para realizar a busca.");
         } else {
@@ -147,13 +155,12 @@ public class Main {
 
             if (fNode != null) {
                 System.out.println("Registros encontrados para \"" + nameKey + "\": ");
-                for (int i = 0; i<= fNode.person.length-1; i++) {
-                    printAllData(fNode.person[i]);
-                }
+                return fNode.person;
             } else {
                 System.out.println("Nenhum registro encontrado iniciando com \"" + nameKey + "\"");
             }
         }
+        return null;
     }
 
     // searchDate efetua uma busca dentro da arvore por um range de datas, entre data1 e data2
@@ -261,9 +268,13 @@ public class Main {
         prettyPrintTree(root.left, space, height, field);
     }
 
-    private static void runAutomatedTests() throws IOException {
+    public static String useSampleFile() {
         Path p = Paths.get("personinfo.csv");
-        int opsCount = ReadCSVFile(p.toAbsolutePath().toString());
+        return p.toAbsolutePath().toString();
+    }
+
+    private static void runAutomatedTests() throws IOException {
+        int opsCount = ReadCSVFile(useSampleFile());
         if (opsCount > 0) {
             searchCPF(treeCPF, 38787549069L);
             searchCPF(treeCPF, 36469186084L);
