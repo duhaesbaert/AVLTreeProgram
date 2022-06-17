@@ -16,6 +16,18 @@ public class KeyStringConverter {
         return convertCharToLongKey(letters);
     }
 
+    // Cria uma chave de index utilizando os primeiros tres characteres do nome de PersonInfo.
+    public static long ConvertStringToShortKey(String key) {
+        char[] letters = key.toCharArray();
+        char[] keyArr = new char[3];
+
+        for (int i = 0; i <= keyArr.length-1; i++) {
+            keyArr[i] = letters[i];
+        }
+
+        return convertCharToLongKey(keyArr);
+    }
+
     // Cria uma chave de index numerica utilizando o texto de data recebido.
     public static long ConvertStringDateToKey(String dateKey) {
         return Long.parseLong(dateKey.replace("/", ""));

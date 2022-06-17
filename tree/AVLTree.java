@@ -2,6 +2,8 @@
 
 package tree;
 
+import java.util.Arrays;
+
 public class AVLTree {
  
     public Node root;
@@ -9,24 +11,45 @@ public class AVLTree {
     // Realiza uma varredura na arvore para encontrar onde o valor deverá ser inserido na arvore.
     // Uma vez que encontrado, insere o nodo e realiza rotações para esquerda/direita conforme necessário para balancear
     // a arvore.
-    public Node Insert(Node node, long value, Person.PersonInfo person) {
+    public Node Insert(Node node, long value, Person.PersonInfo[] person, boolean updatable) {
         if (node == null) {
             System.out.println("Chave " + value + " inserido na arvore.");
             return (new Node(value, person));
         }
 
         if (value < node.value) {
-            node.left = Insert(node.left, value, person);
+            node.left = Insert(node.left, value, person, updatable);
         } else if (value > node.value) {
-            node.right = Insert(node.right, value, person);
+            node.right = Insert(node.right, value, person, updatable);
         } else {
-            System.out.println("Valor atualmente contido na arvore.");
+            if (updatable) {
+                node.person = concatArrays(node.person, person);
+                System.out.println("Chave " + value + " inserido na arvore.");
+            }
             return node;
         }
 
         node.height = getHighestBranchPlusOne(node);
 
         return balanceTreeByValue(node, value);
+    }
+
+    // Concatena dois arrays já existnetes de PersonInfo.
+    private Person.PersonInfo[] concatArrays(Person.PersonInfo[] current, Person.PersonInfo[] newVal) {
+        Person.PersonInfo[] nArr = new Person.PersonInfo[current.length+newVal.length];
+        int nArrIndex = 0;
+
+        for (int i = 0; i <= current.length-1; i++) {
+            nArr[nArrIndex] = current[i];
+            nArrIndex++;
+        }
+
+        for (int i = 0; i <= newVal.length-1; i++) {
+            nArr[nArrIndex] = newVal[i];
+            nArrIndex++;
+        }
+
+        return nArr;
     }
 
     // Utilizado pelo método Insert, realizando balanceamento dos nodos de acordo com seus valores.
@@ -58,8 +81,8 @@ public class AVLTree {
     // argumento o root node, valor pelo qual estará buscando e também um valor booleano
     // indicando se os valores visitados devem ou não ser exibidos.
     // Retorna um booleano informando se o valor foi ou não encontrado.
-    public boolean Search(Node root, long value, boolean print) {
-        return searchRec(root, value, print) != null;
+    public Node Search(Node root, long value, boolean print) {
+        return searchRec(root, value, print);
     }
 
     private Node searchRec(Node node, long value, boolean print) {
@@ -68,7 +91,7 @@ public class AVLTree {
         }
 
         if (print) {
-            System.out.println(node.person.dateOfBirth);
+            System.out.println(node.person[0].dateOfBirth);
         }
         if (value < node.value) {
             return searchRec(node.left, value, print);

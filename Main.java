@@ -10,11 +10,16 @@ import java.util.Scanner;
 public class Main {
     public static AVLTree treeCPF = new AVLTree();
     public static AVLTree treeName = new AVLTree();
+    public static AVLTree treeNameGroup = new AVLTree();
     public static AVLTree treeDOB = new AVLTree();
 
     public static void main(String[] args) throws IOException {
         ReadCSVFile("C:\\Users\\Eduardo Haesbaert\\Documents\\GitHub\\AVLTreeProgram\\CSVFiles\\personinfo.csv");
 
+        searchNameByKey(treeName, "edu");
+        searchNameByKey(treeName, "ren");
+        searchNameByKey(treeName, "jul");
+        searchNameByKey(treeName, "arm");
         /*
         searchCPF(treeCPF, 38787549069L);
         searchCPF(treeCPF, 36469186084L);
@@ -24,6 +29,11 @@ public class Main {
         searchName(treeName, "renato");
         searchName(treeName, "julia");
         searchName(treeName, "juliana");
+
+        searchNameByKey(treeName, "edu");
+        searchNameByKey(treeName, "ren");
+        searchNameByKey(treeName, "jul");
+        searchNameByKey(treeName, "arm");
 
         searchDate(treeDOB, "20/02/1992","25/03/1994");
         System.out.println("");
@@ -71,14 +81,14 @@ public class Main {
     }
 
     // Recebe por argumento uma ArvoreAVL, a chave para indexação, e os valores do objeto PersonInfo.
-    private static void insertPerson(AVLTree tree, long value, Person.PersonInfo person) {
-        tree.root = tree.Insert(tree.root, value, person);
+    private static void insertPerson(AVLTree tree, long value, Person.PersonInfo[] person, boolean updatable) {
+        tree.root = tree.Insert(tree.root, value, person, updatable);
     }
 
     // searchCPF efetua uma busca na arvore buscando pelo valor especifico recebido por argumento
     // e retorna uma mensagem de confirmação para o usuário.
     private static void searchCPF(AVLTree tree, long value) {
-        if (tree.Search(tree.root, value, false)) {
+        if (tree.Search(tree.root, value, false) != null){
             System.out.println("Valor " + value + " encontrado.");
         } else {
             System.out.println("Valor " + value + " não encontrado.");
@@ -90,10 +100,26 @@ public class Main {
     private static void searchName(AVLTree tree, String name) {
         long key = Converter.KeyStringConverter.ConvertStringToKey(name);
 
-        if (tree.Search(tree.root, key, false)) {
+        if (tree.Search(tree.root, key, false) != null) {
             System.out.println("Valor " + name + " encontrado.");
         } else {
             System.out.println("Valor " + name + " não encontrado.");
+        }
+    }
+
+    // searchNameByKey efetua uma busca por uma chave de 3 characteres na arvore e
+    // retorna para uma lista de PersonInfo que estão relacionadas ao parametro de busca.
+    private static void searchNameByKey(AVLTree tree, String nameKey) {
+        long key = Converter.KeyStringConverter.ConvertStringToShortKey(nameKey);
+        Node fNode = tree.Search(tree.root, key, false);
+
+        if (fNode != null) {
+            System.out.println("Registros encontrados para \"" + nameKey + "\": ");
+            for (int i = 0; i<= fNode.person.length-1; i++) {
+                printAllData(fNode.person[i]);
+            }
+        } else {
+            System.out.println("Nenhum registro encontrado iniciando com \"" + nameKey + "\"");
         }
     }
 
@@ -123,13 +149,20 @@ public class Main {
             String[] personValues = line.split(",");
 
             // Cria um objeto PersonInfo com as informações obtidas do CSV.
+            Person.PersonInfo[] pArr = new Person.PersonInfo[1];
             Person.PersonInfo p = new Person.PersonInfo(Long.parseLong(personValues[0]), Long.parseLong(personValues[1]), personValues[2], personValues[3], personValues[4]);
+            pArr[0] = p;
 
             // Indexa os valores nas respectivas arvores de busca.
-            insertPerson(treeCPF, p.cpf, p);
-            insertPerson(treeName, Converter.KeyStringConverter.ConvertStringToKey(p.name), p);
-            insertPerson(treeDOB, Converter.KeyStringConverter.ConvertStringDateToKey(p.dateOfBirth), p);
+            insertPerson(treeCPF, p.cpf, pArr, false);
+            //insertPerson(treeName, Converter.KeyStringConverter.ConvertStringToKey(p.name), pArr, false);
+            insertPerson(treeName, Converter.KeyStringConverter.ConvertStringToShortKey(p.name), pArr, true);
+            insertPerson(treeDOB, Converter.KeyStringConverter.ConvertStringDateToKey(p.dateOfBirth), pArr, false);
         }
+    }
+
+    private static void printAllData(Person.PersonInfo person) {
+        System.out.println("CPF: " + person.cpf + ", RG: " + person.rg + ", Nome: " + person.name + ", Data de Nascimento(DD/MM/AAAA): " + person.dateOfBirth + ", Cidate de Nascimento: " + person.cityOfBirth);
     }
 
     private static void printHelp() {
