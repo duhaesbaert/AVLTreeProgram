@@ -4,7 +4,9 @@ import Converter.KeyStringConverter;
 import Person.PersonInfo;
 import tree.*;
 
+import javax.swing.*;
 import java.io.*;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
@@ -12,12 +14,12 @@ public class Main {
     public static AVLTree treeName = new AVLTree();
     public static AVLTree treeDOB = new AVLTree();
 
+
     public static void main(String[] args) throws IOException {
-        runAutomatedTests();
-        //initProg(treeCPF, treeName, treeDOB, true);
+        initProg(true);
     }
 
-    public static void initProg(AVLTree tree, AVLTree name, AVLTree dob, boolean printH) throws IOException {
+    public static void initProg(boolean printH) throws IOException {
         if (printH) {
             printHelp();
             printH = false;
@@ -28,11 +30,56 @@ public class Main {
         String input = reader.readLine();
         String command = input.substring(0,1);
 
-        Person.PersonInfo person = new PersonInfo(0,0, "eduardo", "25/03/1994", "Sao Leopoldo");
+        switch (command) {
+            case "f":
+                startMyForm();
+                break;
+            case "c":
+                startCLI(true);;
+                break;
+            case "e":
+                System.out.println("Finalizando programa.");
+                System.exit(0);
+                break;
+            case "h":
+                printH = true;
+                break;
+            default:
+                System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
+                printH = true;
+                break;
+        }
+
+        initProg(printH);
+    }
+
+    private static void startMyForm() {
+        JFrame frame = new JFrame("StartForm");
+        frame.setContentPane(new StartForm().tabbedPane1);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    private static void startCLI(boolean printH) throws IOException {
+        if (printH) {
+            printHelpCLI();
+            printH = false;
+        }
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("");
+        System.out.print("Insira o comando> ");
+        String input = reader.readLine();
+        String command = input.substring(0,1);
 
         switch (command) {
-            case "b":
-                //searchInput(tree, Integer.parseInt(input.substring(2, input.length())));
+            case "i":
+                initProg(true);
+                break;
+            case "c":
+                ReadCSVFile(input.substring(2, input.length()));
+                printH = true;
                 break;
             case "r":
                 runAutomatedTests();
@@ -42,18 +89,32 @@ public class Main {
                 System.out.println("Finalizando programa.");
                 System.exit(0);
                 break;
-            case "h":
-                printH = true;
+            case "b":
+                searchCPF(treeCPF, Long.parseLong(input.substring(2, input.length())));
+                break;
+            case "n":
+                searchNameByKey(treeName, input.substring(2, input.length()));
+                break;
+            case "d":
+                String[] argArr = input.substring(2, input.length()).split(" ");
+                searchDate(treeDOB, argArr[0], argArr[1]);
                 break;
             case "p":
-                printTree(tree, input.substring(2, input.length()));
+                String args = input.substring(2, input.length());
+                if (args == "nome" || args == "nomes") {
+                    printTree(treeName);
+                } else if(args == "data" || args == "datas") {
+                    printTree(treeDOB);
+                } else {
+                    printTree(treeCPF);
+                }
                 break;
             default:
                 System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
                 break;
         }
 
-        initProg(tree, name, dob, printH);
+        startCLI(printH);
     }
 
     // Recebe por argumento uma ArvoreAVL, a chave para indexação, e os valores do objeto PersonInfo.
@@ -76,16 +137,20 @@ public class Main {
     // searchNameByKey efetua uma busca por uma chave de 3 characteres na arvore e
     // retorna para uma lista de PersonInfo que estão relacionadas ao parametro de busca.
     private static void searchNameByKey(AVLTree tree, String nameKey) {
-        long key = Converter.KeyStringConverter.ConvertStringToShortKey(nameKey);
-        Node fNode = tree.Search(tree.root, key, false);
-
-        if (fNode != null) {
-            System.out.println("Registros encontrados para \"" + nameKey + "\": ");
-            for (int i = 0; i<= fNode.person.length-1; i++) {
-                printAllData(fNode.person[i]);
-            }
+        if (nameKey.length() < 3) {
+            System.out.println("Por favor, digite ao menos 3 caracteres para realizar a busca.");
         } else {
-            System.out.println("Nenhum registro encontrado iniciando com \"" + nameKey + "\"");
+            long key = Converter.KeyStringConverter.ConvertStringToShortKey(nameKey);
+            Node fNode = tree.Search(tree.root, key, false);
+
+            if (fNode != null) {
+                System.out.println("Registros encontrados para \"" + nameKey + "\": ");
+                for (int i = 0; i<= fNode.person.length-1; i++) {
+                    printAllData(fNode.person[i]);
+                }
+            } else {
+                System.out.println("Nenhum registro encontrado iniciando com \"" + nameKey + "\"");
+            }
         }
     }
 
@@ -132,32 +197,28 @@ public class Main {
     }
 
     private static void printHelp() {
-        System.out.println("Para realizar uma operação, digite um dos comandos seguido de um número inteiro, separados por um espaço, e aperte enter:");
-        //System.out.println("Executar i): i <valor>");
-        System.out.println("Buscar(b): b <valor>");
-        //System.out.println("Remover(r): r <valor>");
-        System.out.println("");
-        //System.out.println("Print(p):");
-        //System.out.println("Pré-ordem: p pre");
-        //System.out.println("Em ordem: p in");
-        //System.out.println("Pós-ordem: p post");
-        //System.out.println("");
+        System.out.println("Digite o comando de acordo com a operação que deseja executar e pressione enter:");
+        System.out.println("Abrir UI(f)");
+        System.out.println("Utilizar CLI(c)");
+        System.out.println("Para sair, digite e");
+        //https://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram-in-java
+    }
+
+    private static void printHelpCLI() {
+        System.out.println("Bem vindo a CLI do programa. Digite o comando desejado e pressione enter:");
+        System.out.println("Voltar para o inicio(i)");
+        System.out.println("Importar valores de CSV(c): c caminho_do_arquivo");
+        System.out.println("Buscar por CPF(b): b numero_de_cpf");
+        System.out.println("Buscar por inicio do nome(n): b tres_primeiras_letras");
+        System.out.println("Buscar por intervalo de datas(d): d data_inicio data_fim");
+        System.out.println("Exibir Estado atual dos indexes(p cpf, p nome ou p data)");
+        System.out.println("Executar testes automatizados(r)");
         System.out.println("Para sair, digite e");
     }
 
-    private static void printTree(AVLTree tree, String value) {
-        if (value.equals("pre")) {
-            tree.PreOrder(tree.root);
-            System.out.println("");
-        } else if (value.equals("post")) {
-            tree.PostOrder(tree.root);
-            System.out.println("");
-        } else if (value.equals("in")) {
+    private static void printTree(AVLTree tree) {
             tree.InOrder(tree.root);
             System.out.println("");
-        } else {
-            System.out.println("Comando inválido. Por favor, insira um comando válido, ou pressione h para exibir os comandos.");
-        }
     }
 
     private static void runAutomatedTests() throws IOException {
